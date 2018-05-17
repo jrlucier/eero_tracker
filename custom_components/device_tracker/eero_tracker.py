@@ -13,6 +13,7 @@ device_tracker:
 """
 import logging
 import voluptuous as vol
+import datetime
 import re
 import json
 import requests
@@ -58,6 +59,10 @@ class EeroDeviceScanner(DeviceScanner):
         self.__scan_interval = config[CONF_SCAN_INTERVAL]
         self.__last_results = []
 
+        if self.__scan_interval < datetime.timedelta(seconds=25):
+            _LOGGER.error('Disabled. Scan interval is too fast!  Must be 25 or greater to prevent DDOSing Eeros servers.')
+            return
+
         try:
             with open(self.__session_file, 'r') as f:
                 self.__session = f.read().replace('\n', '')
@@ -67,6 +72,9 @@ class EeroDeviceScanner(DeviceScanner):
 
 
     def scan_devices(self):
+        if self.__session == None:
+          return []
+
         self._update_info()
         _LOGGER.debug('active_hosts %s', str(self.__last_results))
         return self.__last_results
