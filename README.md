@@ -27,7 +27,7 @@ To get a session reference to Eero, you need to go to your configuration directo
 python eero_tracker_instantiate.py
 ```
 
-`chmod` the files to the same permissions as your other HA configuration files.  Mine are owned by `homeassistant:none`:
+`chmod` the files to the same permissions as your other HA configuration files.  Mine are owned by `homeassistant:nogroup`:
 ```
 sudo chown homeassistant:nogroup eero.session 
 sudo chown -R homeassistant:nogroup eero_tracker_instantiate.py 
