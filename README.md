@@ -33,7 +33,7 @@ Now that that's done, all you need to do is update your `configuration.yaml` wit
 device_tracker:
   - platform: eero_tracker
     consider_home: 300
-    interval_seconds: 60 # Don't set it much lower than this.  We don't want to hammer Eero's servers
+    interval_seconds: 60 # Recommended...do not set this lower than 25, we don't want to DDOS Eero
     only_macs: "11:22:33:44:55:66, 22:22:22:22:22:22"  # Optional
 ```
 `only_macs` is optional, but allows you to reduce down the devices returned to a core set of mac addresses.  The list is comma separated.
