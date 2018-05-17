@@ -30,7 +30,7 @@ python eero_tracker_instantiate.py
 `chmod` the files to the same permissions as your other HA configuration files.  Mine are owned by `homeassistant:nogroup`:
 ```
 sudo chown homeassistant:nogroup eero.session 
-sudo chown -R homeassistant:nogroup eero_tracker_instantiate.py 
+sudo chown homeassistant:nogroup eero_tracker_instantiate.py 
 sudo chown -R homeassistant:nogroup custom_components/
 
 ```
