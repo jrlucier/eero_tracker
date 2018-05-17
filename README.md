@@ -1,7 +1,7 @@
 # eero_tracker
 This adds Eero device tracking to Home Assistant (HA, HASSIO, HASS OS).
 
-## Setup
+## Setup the scripts!
 There are two ways to get the files copied into your HA instance:
 
 1. Manually copy the files from this project into your configuration directory of your Home Assistant install (mine is `~/.homeassistant`.  This directory is the same one which has the `configuration.yaml` file in it. Note: You need to maintain the exact same directory pathings as I use in this repository.
@@ -16,7 +16,7 @@ There are two ways to get the files copied into your HA instance:
     ```
     git pull
     ```
-    If you wish to blow away the `.git` directories and ignore future updates, run the following in the configuration directory (eg: `cd ~/.homeassistant`):
+    If you wish to never update again via `git`, then you can blow away the `.git` directories.  You can run the following in the configuration directory (eg: `cd ~/.homeassistant`) to do that:
     ```
     ( find . -type d -name ".git" && find . -name ".gitignore" && find . -name ".gitmodules" ) | xargs -d '\n' rm -rf
     ```
@@ -25,6 +25,14 @@ There are two ways to get the files copied into your HA instance:
 To get a session reference to Eero, you need to go to your configuration directory (eg: `cd ~/.homeassistant`), and run the `eero_tracker_instantiate.py` file:
 ```
 python eero_tracker_instantiate.py
+```
+
+`chmod` the files to the same permissions as your other HA configuration files.  Mine are owned by `homeassistant:none`:
+```
+sudo chown homeassistant:nogroup eero.session 
+sudo chown -R homeassistant:nogroup eero_tracker_instantiate.py 
+sudo chown -R homeassistant:nogroup custom_components/
+
 ```
 This will prompt you for your phone number (no dashes), and then it will send you an SMS text with a code you will need to put in.  Once done, it will create an `eero.session` file in your configuration directory.  Subsequent calls to this python file will dump the list of connected wireless devices, their mac addresses, and hostnames for easier reference.  You technically shouldn't need this file after the creation of the `eero.session` file, but I keep it around for my own sanity.
 
