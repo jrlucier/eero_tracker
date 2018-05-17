@@ -1,5 +1,5 @@
 # eero_tracker
-This adds Eero device tracking to Home Assistant (HA, HASSIO, HASS OS).
+This adds Eero device tracking to Home Assistant (HA, HASSIO, HASS OS). This project is based on @343max's eero-client project: https://github.com/343max/eero-client -- many thanks to him or this project probably wouldn't exist.  This code has no warranties, and please submit any pull requests you might have to improve upon it.
 
 ## Setup the scripts!
 There are two ways to get the files copied into your HA instance:
