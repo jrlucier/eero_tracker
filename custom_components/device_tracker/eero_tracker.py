@@ -55,7 +55,7 @@ class EeroDeviceScanner(DeviceScanner):
         """Initialize the scanner."""
         self.__session_file = hass.config.path(config[CONF_SESSION_FILE_NAME])
         self.__session = None
-        self.__only_macs = set([x.strip() for x in config[CONF_ONLY_MACS_KEY].split('.') if x != '']) 
+        self.__only_macs = set([x.strip() for x in config[CONF_ONLY_MACS_KEY].split(',') if x != '']) 
         self.__scan_interval = config[CONF_SCAN_INTERVAL]
         self.__last_results = []
 
