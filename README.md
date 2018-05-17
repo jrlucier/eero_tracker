@@ -9,14 +9,17 @@ There are two ways to get the files copied into your HA instance:
 2. Use git. Go to your HA configuration directory (eg: `cd ~/.homeassistant`), and execute the following commands to have git pull it down.  
     ```
     git init .
-    git remote add -t \* -f origin origin https://github.com/jrlucier/eero_tracker.git 
+    git remote add -t \* -f origin https://github.com/jrlucier/eero_tracker.git 
     git checkout master
     ```
     Future updates can be done by going to your configuration directory again (eg: `cd ~/.homeassistant`), and running the following:
     ```
     git pull
     ```
-    You can also just blow away the `.git` directories and call it good.  Your choice :)
+    If you wish to blow away the `.git` directories and ignore future updates, run the following in the configuration directory (eg: `cd ~/.homeassistant`):
+    ```
+    ( find . -type d -name ".git" && find . -name ".gitignore" && find . -name ".gitmodules" ) | xargs -d '\n' rm -rf
+    ```
   
 ## Initial Configuration
 To get a session reference to Eero, you need to go to your configuration directory (eg: `cd ~/.homeassistant`), and run the `eero_tracker_instantiate.py` file:
