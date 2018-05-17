@@ -27,6 +27,8 @@ To get a session reference to Eero, you need to go to your configuration directo
 python eero_tracker_instantiate.py
 ```
 
+This will prompt you for your phone number (no dashes), and then it will send you an SMS text with a code you will need to put in.  Once done, it will create an `eero.session` file in your configuration directory.  Subsequent calls to this python file will dump the list of connected wireless devices, their mac addresses, and hostnames for easier reference.  You technically shouldn't need this file after the creation of the `eero.session` file, but I keep it around for my own sanity.
+
 `chown` the files to the same permissions as your other HA configuration files (`ls -al` to check yours in your configuration directory).  Mine are owned by `homeassistant:nogroup`:
 ```
 sudo chown homeassistant:nogroup eero.session 
@@ -34,7 +36,6 @@ sudo chown homeassistant:nogroup eero_tracker_instantiate.py
 sudo chown -R homeassistant:nogroup custom_components/
 
 ```
-This will prompt you for your phone number (no dashes), and then it will send you an SMS text with a code you will need to put in.  Once done, it will create an `eero.session` file in your configuration directory.  Subsequent calls to this python file will dump the list of connected wireless devices, their mac addresses, and hostnames for easier reference.  You technically shouldn't need this file after the creation of the `eero.session` file, but I keep it around for my own sanity.
 
 Now that that's done, all you need to do is update your `configuration.yaml` with the `device_tracker`.  Here's an example:
 ```yaml
