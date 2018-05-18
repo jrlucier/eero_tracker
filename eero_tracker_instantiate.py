@@ -7,11 +7,11 @@ from abc import abstractproperty
 __version__ = "0.0.1"
 __all__ = ['ClientException', 'Eero', 'SessionStorage', '__version__']
 
-class Eero(object):
 
-    def __init__(self, session):
+class Eero(object):
+    def __init__(self, arg_session):
         # type(SessionStorage) -> ()
-        self.session = session
+        self.session = arg_session
         self.client = Client()
 
     @property
@@ -30,19 +30,18 @@ class Eero(object):
         data = self.client.post('login', params=params)
         return data['user_token']
 
-    def login_verify(self, verification_code, user_token):
-        params = dict(code=verification_code)
+    def login_verify(self, arg_verification_code, arg_user_token):
+        params = dict(code=arg_verification_code)
         response = self.client.post('login/verify', params=params,
-                                    cookies=dict(s=user_token))
-        self.session.cookie = user_token
+                                    cookies=dict(s=arg_user_token))
+        self.session.cookie = arg_user_token
         return response
 
     def refreshed(self, func):
         try:
             return func()
         except ClientException as exception:
-            if (exception.status == 401
-                    and exception.error_message == 'error.session.refresh'):
+            if exception.status == 401 and exception.error_message == 'error.session.refresh':
                 self.login_refresh()
                 return func()
             else:
@@ -54,10 +53,11 @@ class Eero(object):
 
     def account(self):
         return self.refreshed(lambda: self.client.get(
-                                          'account',
-                                          cookies=self._cookie_dict))
+            'account',
+            cookies=self._cookie_dict))
 
-    def id_from_url(self, id_or_url):
+    @staticmethod
+    def id_from_url(id_or_url):
         match = re.search('^[0-9]+$', id_or_url)
         if match:
             return match.group(0)
@@ -67,9 +67,8 @@ class Eero(object):
 
     def devices(self, network_id):
         return self.refreshed(lambda: self.client.get(
-                                        'networks/{}/devices'.format(
-                                            self.id_from_url(network_id)),
-                                        cookies=self._cookie_dict))
+            'networks/{}/devices'.format(
+                self.id_from_url(network_id)), cookies=self._cookie_dict))
 
 
 class SessionStorage(object):
@@ -77,16 +76,19 @@ class SessionStorage(object):
     def cookie(self):
         pass
 
+
 class ClientException(Exception):
     def __init__(self, status, error_message):
         super(ClientException, self).__init__()
         self.status = status
         self.error_message = error_message
 
+
 class Client(object):
     API_ENDPOINT = 'https://api-user.e2ro.com/2.2/{}'
 
-    def _parse_response(self, response):
+    @staticmethod
+    def _parse_response(response):
         data = json.loads(response.text)
         if data['meta']['code'] is not 200 and data['meta']['code'] is not 201:
             raise ClientException(data['meta']['code'],
@@ -100,6 +102,7 @@ class Client(object):
     def get(self, action, **kwargs):
         response = requests.get(self.API_ENDPOINT.format(action), **kwargs)
         return self._parse_response(response)
+
 
 class CookieStore(SessionStorage):
     def __init__(self, cookie_file):
@@ -126,29 +129,32 @@ class CookieStore(SessionStorage):
 session = CookieStore('eero.session')
 eero = Eero(session)
 
-
 if __name__ == '__main__':
     if eero.needs_login():
+
+        try:
+            input = raw_input
+        except NameError:
+            pass
+
         parser = ArgumentParser()
         parser.add_argument("-l", help="Your eero login (phone number)")
         args = parser.parse_args()
         if args.l:
             phone_number = args.l
         else:
-            phone_number = raw_input('Your eero login (phone number): ')
+            phone_number = input('Your eero login (phone number): ')
         user_token = eero.login(phone_number)
-        verification_code = raw_input('Verification key from SMS: ')
+        verification_code = input('Verification key from SMS: ')
         eero.login_verify(verification_code, user_token)
         print('Login successful. eero.session created, you can now use the device_tracker.')
     else:
         print('eero.session already created dumping all devices')
         account = eero.account()
         for network in account['networks']['data']:
-          devices = eero.devices(network['url'])
+            devices = eero.devices(network['url'])
 
-          json_obj = json.loads(json.dumps(devices, indent=4))
-          for device in json_obj:
-            if device['wireless'] and device['connected']:
-              print("{}, {}, {}".format(device['nickname'], device['hostname'], device['mac']))
-
-
+            json_obj = json.loads(json.dumps(devices, indent=4))
+            for device in json_obj:
+                if device['wireless'] and device['connected']:
+                    print("{}, {}, {}".format(device['nickname'], device['hostname'], device['mac']))
