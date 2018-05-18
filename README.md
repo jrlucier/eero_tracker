@@ -51,4 +51,4 @@ device_tracker:
     interval_seconds: 60 # Recommended...do not set this lower than 25, we don't want to DDOS Eero
     only_macs: "11:22:33:44:55:66, 22:22:22:22:22:22"  # Optional
 ```
-`only_macs` is optional, but allows you to reduce down the devices returned to a core set of mac addresses.  The list is comma separated.
+`only_macs` is optional, but allows you to reduce down the devices returned to a core set of mac addresses.  The list is comma separated. They should be lowercase (ticket open to make it case insensitive).
