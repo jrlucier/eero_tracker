@@ -2,11 +2,17 @@
 This adds Eero device tracking to Home Assistant (HA, HASSIO, HASS OS). This project is based on @343max's eero-client project: https://github.com/343max/eero-client -- many thanks to him or this project probably wouldn't exist.  This code has no warranties, and please submit any pull requests you might have to improve upon it.
 
 ## Setup the scripts!
-There are two ways to get the files copied into your HA instance:
+There are three ways to get the files copied into your HA instance:
+1. Download the zip file from the releases section, then uncompress them in your configuration directory (mine is `~/.homeassistant`). Example:
+    ```
+    cd ~/.homeassistant/
+    wget https://github.com/jrlucier/eero_tracker/releases/download/1.0/eero_tracker-1.0.zip
+    unzip eero_tracker-1.0.zip
+    ```
 
-1. Manually copy the files from this project into your configuration directory of your Home Assistant install (mine is `~/.homeassistant`.  This directory is the same one which has the `configuration.yaml` file in it. Note: You need to maintain the exact same directory pathings as I use in this repository.
+2. Manually copy the files from this project into your configuration directory of your Home Assistant install (eg: `~/.homeassistant`).  This directory is the same one which has the `configuration.yaml` file in it. Note: You need to maintain the exact same directory pathings as I use in this repository.
 
-2. Use git. Go to your HA configuration directory (eg: `cd ~/.homeassistant`), and execute the following commands to have git pull it down.  
+3. Use git. Go to your HA configuration directory (eg: `cd ~/.homeassistant`), and execute the following commands to have git pull it down.  
     ```
     git init .
     git remote add -t \* -f origin https://github.com/jrlucier/eero_tracker.git 
