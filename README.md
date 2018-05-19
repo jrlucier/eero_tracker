@@ -6,8 +6,8 @@ There are three ways to get the files copied into your HA instance:
 1. Download the zip file from the releases section, then uncompress them in your configuration directory (mine is `~/.homeassistant`). Example:
     ```
     cd ~/.homeassistant/
-    wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.1/eero_tracker-1.0.1.zip
-    unzip eero_tracker-1.0.1.zip
+    wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.2/eero_tracker-1.0.2.zip
+    unzip eero_tracker-1.0.2.zip
     ```
 
 2. Manually copy the files from this project into your configuration directory of your Home Assistant install (eg: `~/.homeassistant`).  This directory is the same one which has the `configuration.yaml` file in it. Note: You need to maintain the exact same directory pathings as I use in this repository.
