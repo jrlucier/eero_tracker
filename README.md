@@ -2,14 +2,14 @@
 This adds Eero device tracking to Home Assistant (HA, HASSIO, HASS OS). This project is based on @343max's eero-client project: https://github.com/343max/eero-client -- many thanks to him or this project probably wouldn't exist.  This code has no warranties, and please submit any pull requests you might have to improve upon it.
 
 ### Why do I need to run a script in my config directory?
-Eero doesn't have a traditional user/password login setup, so we need to use your phone's SMS to create an authenticated session.  To do that, you'll need to SSH into your device running Home Assistant to run an interactive script that allows that to occur.  You may remove the `eero_tracker_instantiate.py` script after everything is configured.
+Eero doesn't have a traditional user/password login setup, so we need to use your phone's SMS to create an authenticated session.  To do that, you'll need to SSH into your device running Home Assistant to run an interactive script that allows that to occur. 
 
 ### Note for HASS.IO users
-If you're running HASS.IO, be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on.  Your configuration directory will be stored under `/config`
+If you're running HASS.IO, be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on.  Your configuration directory will be stored under `/config`.
 
 ### Step 1: Copy the scripts!
 SSH into your device.  Then use one of the three ways to get the files copied into your HA instance:
-1. Download the zip file from the releases section, then uncompress them in your configuration directory (mine is `~/.homeassistant`). Example:
+1. [Recommended Method] Download the zip file from the releases section, then uncompress them in your configuration directory (mine is `~/.homeassistant`). Example:
     ```
     cd ~/.homeassistant/
     wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.2/eero_tracker-1.0.2.zip
