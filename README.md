@@ -8,30 +8,12 @@ Eero doesn't have a traditional user/password login setup, so we need to use you
 If you're running HASS.IO, be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on.  Your configuration directory will be stored under `/config`.
 
 ### Step 1: Copy the scripts!
-SSH into your device.  Then use one of the three ways to get the files copied into your HA instance:
-1. [Recommended Method] Download the zip file from the releases section, then uncompress them in your configuration directory (mine is `~/.homeassistant`). Example:
-    ```
-    cd ~/.homeassistant/
-    wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.2/eero_tracker-1.0.2.zip
-    unzip eero_tracker-1.0.2.zip
-    ```
-
-2. Manually copy the files from this project into your configuration directory of your Home Assistant install (eg: `~/.homeassistant`).  This directory is the same one which has the `configuration.yaml` file in it. Note: You need to maintain the exact same directory pathings as I use in this repository.
-
-3. Use git. Go to your HA configuration directory (eg: `cd ~/.homeassistant`), and execute the following commands to have git pull it down.  
-    ```
-    git init .
-    git remote add -t \* -f origin https://github.com/jrlucier/eero_tracker.git 
-    git checkout master
-    ```
-    Future updates can be done by going to your configuration directory again (eg: `cd ~/.homeassistant`), and running the following:
-    ```
-    git pull
-    ```
-    If you wish to never update again via `git`, then you can blow away the `.git` directories.  You can run the following in the configuration directory (eg: `cd ~/.homeassistant`) to do that:
-    ```
-    ( find . -type d -name ".git" && find . -name ".gitignore" && find . -name ".gitmodules" ) | xargs -d '\n' rm -rf
-    ```
+SSH into your device. Now we need to download the zip file from the releases section, and uncompress it in your configuration directory (mine is `~/.homeassistant`):
+```
+cd ~/.homeassistant/
+wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.2/eero_tracker-1.0.2.zip
+unzip eero_tracker-1.0.2.zip
+```
   
 ### Step 2: Initial Configuration and Eero Session Creation
 The scripts in this project rely on the "requests" package, so install it if it's not already installed:
