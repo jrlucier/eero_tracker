@@ -134,12 +134,6 @@ class EeroDeviceScanner(DeviceScanner):
         """Creates a session cookie"""
         return dict(s=self.__session)
 
-    def _login(self, identifier):
-        """Eero login"""
-        params = dict(login=identifier)
-        data = self._post_req('login', params=params)
-        return data['user_token']
-
     def _refreshed(self, func):
         """Handles if we need to refresh the logged in session or not"""
         try:
