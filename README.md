@@ -27,7 +27,7 @@ We need to get an authenticated session created with Eero's servers. So to do th
 ```
 python3 eero_tracker_instantiate.py
 ```
-This will prompt you for your phone number (no dashes), and then it will send you an SMS text with a code you will need to put in.  Once done, it will create an `eero.session` file in your configuration directory.  Subsequent calls to this python file will dump the list of connected wireless devices, their mac addresses, and hostnames for easier reference.  You technically shouldn't need `eero_tracker_instantiate.py` after the creation of the `eero.session` file, but I keep it around for quick mac address referencing.
+This will prompt you for your phone number (no dashes), and then it will send you an SMS text with a code you will need to put in.  You may also use an email address instead.  Once done, it will create an `eero.session` file in your configuration directory.  Subsequent calls to this python file will dump the list of connected wireless devices, their mac addresses, and hostnames for easier reference.  You technically shouldn't need `eero_tracker_instantiate.py` after the creation of the `eero.session` file, but I keep it around for quick mac address referencing.
 
 If you're not running HASS.IO (default SSH user is root), and have Home Assistant configured differently, then check the permissions on the files. `chown` the files to the same permissions as your other HA configuration files (`ls -al` to check yours in your configuration directory).  Mine are owned by `homeassistant:nogroup`:
 ```
