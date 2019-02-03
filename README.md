@@ -2,7 +2,7 @@
 This adds Eero device tracking to Home Assistant (HA, HASSIO, HASS OS). This project is based on @343max's eero-client project: https://github.com/343max/eero-client -- many thanks to him or this project probably wouldn't exist.  This code has no warranties, and please submit any pull requests you might have to improve upon it.
 
 #### Why do I need to run a script in my config directory?
-Eero doesn't have a traditional user/password login setup, so we need to use your phone's SMS to create an authenticated session.  To do that, you'll need to SSH into your device running Home Assistant to run an interactive script that allows that to occur. 
+Eero doesn't have a traditional user/password login setup, so we need to use your phone's SMS or your email address to create an authenticated session.  To do that, you'll need to SSH into your device running Home Assistant to run an interactive script that allows that to occur. 
 
 #### Note for HASS.IO users
 If you're running HASS.IO, be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on.  Your configuration directory will be stored under `/config` instead of `~/.homeassistant/`. 
