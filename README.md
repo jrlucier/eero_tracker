@@ -17,8 +17,8 @@ Now let's get on with installin' this thing!
 SSH into your device. Now we need to download the zip file from the releases section, and uncompress it in your configuration directory (mine is `~/.homeassistant`):
 ```
 cd ~/.homeassistant/
-wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.3/eero_tracker-1.0.3.zip
-unzip eero_tracker-1.0.3.zip
+wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.4/eero_tracker-1.0.4.zip
+unzip eero_tracker-1.0.4.zip
 ```
   
 ### Step 2: Initial Configuration and Eero Session Creation
