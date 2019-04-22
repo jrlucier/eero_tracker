@@ -1,6 +1,6 @@
 ## Eero Device Tracker for Home Assistant
 
-This adds [Eero](https://eero.com/) device tracking to Home Assistant (HA, HASSIO, HASS OS). This project is based on [@343max's eero-client project](https://github.com/343max/eero-client) -- many thanks to him or this project probably wouldn't exist.  This code has no warranties, and please submit any pull requests you might have to improve upon it.
+This adds [Eero](https://eero.com/) device tracking to Home Assistant (HA, HASSIO, HASS OS). This project is based on [@343max's eero-client project](https://github.com/343max/eero-client) -- many thanks to him or this project probably wouldn't exist. Thanks to @rsnodgrass for the structural improvements. This code has no warranties, and please submit any pull requests you might have to improve upon it.
 
 #### Why do I need to run a script in my config directory?
 
