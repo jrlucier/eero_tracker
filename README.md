@@ -63,7 +63,7 @@ You should see devices populate, using the devices nicknames where possible as t
 
 For easy updates whenever a new version is released, use the [Home Assistant custom_updater component](https://github.com/custom-components/custom_updater/wiki/Installation) and [Tracker card](https://github.com/custom-cards/tracker-card). Once those are setup, add the following custom_updater config:
 
-``` 
+```yaml
 custom_updater:
   track:
     - components
