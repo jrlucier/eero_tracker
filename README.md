@@ -1,6 +1,6 @@
 ## Eero Device Tracker for Home Assistant
 
-This adds (Eero)[https://eero.com/] device tracking to Home Assistant (HA, HASSIO, HASS OS). This project is based on @343max's eero-client project: https://github.com/343max/eero-client -- many thanks to him or this project probably wouldn't exist.  This code has no warranties, and please submit any pull requests you might have to improve upon it.
+This adds [Eero](https://eero.com/) device tracking to Home Assistant (HA, HASSIO, HASS OS). This project is based on [@343max's eero-client project](https://github.com/343max/eero-client) -- many thanks to him or this project probably wouldn't exist.  This code has no warranties, and please submit any pull requests you might have to improve upon it.
 
 #### Why do I need to run a script in my config directory?
 
@@ -58,3 +58,17 @@ device_tracker:
 ### Step 4: Restart and test
 
 You should see devices populate, using the devices nicknames where possible as the name of the device.  If you experience any issues, please let me know!
+
+### Step 5: Automatic Updates with Custom Updater (Optional)
+
+For easy updates whenever a new version is released, use the [Home Assistant custom_updater component](https://github.com/custom-components/custom_updater/wiki/Installation) and [Tracker card](https://github.com/custom-cards/tracker-card). Once those are setup, add the following custom_updater config:
+
+``` 
+custom_updater:
+  track:
+    - components
+  component_urls:
+    - https://raw.githubusercontent.com/jrlucier/eero_tracker/master/custom_updater.json
+```
+
+

@@ -1,0 +1,8 @@
+{
+  "domain": "eero_tracker",
+  "name": "Eero Tracker",
+  "documentation": "https://github.com/jrlucier/eero_tracker",
+  "dependencies": [],
+  "codeowners": ["@jrlucier"],
+  "requirements": ["requests>=2.13.0"]
+}
