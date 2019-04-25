@@ -1,5 +1,5 @@
 {
-    "device_tracker.eero_tracker": {
+    "eero_tracker": {
       "updated_at": "2019-04-21",
       "version": "1.0.4",
       "local_location": "/custom_components/eero_tracker/device_tracker.py",
