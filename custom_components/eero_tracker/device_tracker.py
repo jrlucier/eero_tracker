@@ -24,6 +24,8 @@ from homeassistant.components.device_tracker import (
 
 REQUIREMENTS = ['requests==2.13.0']
 
+__version__ = '1.0.4'
+
 _LOGGER = logging.getLogger(__name__)
 
 CONF_ONLY_MACS_KEY = 'only_macs'
