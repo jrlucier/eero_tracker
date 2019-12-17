@@ -1,9 +1,10 @@
 {
-  "domain": "eero_tracker",
+  "domains": [ "device_tracker" ],
   "name": "Eero Tracker",
   "documentation": "https://github.com/jrlucier/eero_tracker",
   "dependencies": [],
   "codeowners": ["@jrlucier"],
   "requirements": ["requests>=2.13.0"],
-  "homeassistant": "0.92.0"
+  "homeassistant": "0.92.0",
+  "render_readme": true
 }
