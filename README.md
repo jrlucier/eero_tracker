@@ -1,5 +1,7 @@
 ## Eero Device Tracker for Home Assistant
 
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+
 This adds [Eero](https://eero.com/) device tracking to Home Assistant (HA, HASSIO, HASS OS). This project is based on [@343max's eero-client project](https://github.com/343max/eero-client) -- many thanks to him or this project probably wouldn't exist. Thanks to [@rsnodgrass](https://github.com/rsnodgrass) for the structural improvements. This code has no warranties, and please submit any pull requests you might have to improve upon it.
 
 #### Why do I need to run a script in my config directory?
@@ -11,6 +13,18 @@ Eero doesn't have a traditional user/password login setup, so we need to use you
 If you're running HASS.IO, be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on.  Your configuration directory will be stored under `/config` instead of `~/.homeassistant/`. 
 
 Now let's get on with installin' this thing!
+
+## Installation with Home Assistant Community Store (HACS)
+
+For easy updates whenever a new version is released, use the [Home Assistant Community Store (HACS)](https://github.com/hacs/integration) and add the following Integration in the Settings tab:
+
+```
+jrlucier/eero_tracker
+```
+
+Then go to the Integration tab and search for "Eero Tracker" and click install.
+
+## Manual Installation
 
 ### Step 1: Copy the scripts!
 
@@ -58,17 +72,3 @@ device_tracker:
 ### Step 4: Restart and test
 
 You should see devices populate, using the devices nicknames where possible as the name of the device.  If you experience any issues, please let me know!
-
-### Step 5: Automatic Updates with Custom Updater (Optional)
-
-For easy updates whenever a new version is released, use the [Home Assistant custom_updater component](https://github.com/custom-components/custom_updater/wiki/Installation) and [Tracker card](https://github.com/custom-cards/tracker-card). Once those are setup, add the following custom_updater config:
-
-```yaml
-custom_updater:
-  track:
-    - components
-  component_urls:
-    - https://raw.githubusercontent.com/jrlucier/eero_tracker/master/custom_updater.json
-```
-
-
