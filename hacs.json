@@ -1,0 +1,5 @@
+{
+  "name": "Eero Device Tracker",
+  "domains": ["device_tracker"],
+  "render_readme": true
+}
