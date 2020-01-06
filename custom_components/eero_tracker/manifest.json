@@ -1,5 +1,5 @@
 {
-  "domains": [ "device_tracker" ],
+  "domain": "eero_tracker",
   "name": "Eero Tracker",
   "documentation": "https://github.com/jrlucier/eero_tracker",
   "dependencies": [],
