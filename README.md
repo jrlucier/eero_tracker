@@ -25,7 +25,7 @@ jrlucier/eero_tracker
 
 Then go to the Integration tab and search for "Eero Tracker" and click install.
 
-## Option B: Manual Installation
+### Option B: Manual Installation
 
 Copy the scripts!
 
@@ -67,9 +67,9 @@ sudo chown homeassistant:nogroup eero_tracker_instantiate.py
 sudo chown -R homeassistant:nogroup custom_components/
 ```
 
-## Step 3: Add it to Home Assistant's configuration!
+## Step 3: Add Tracker to Home Assistant's Configuration
 
-Now that that's done, all you need to do is update your `configuration.yaml` with the `device_tracker`.
+Now that that installation and authentication are done, all that is left is to add the `device_tracke` to your `configuration.yaml`.
 
 Here's an example:
 
@@ -81,10 +81,19 @@ device_tracker:
     only_macs: "11:22:33:44:55:66, 22:22:22:22:22:22"  # Optional
 ```
 
-`only_macs` is optional, but allows you to reduce down the devices returned to a core set of mac addresses.  The list is comma separated. 
+`only_macs` is optional, but allows you to reduce down the devices returned to a core set of mac addresses. The list is comma separated. 
 
-`interval_seconds` must be 25sec or greater.  Any less and it'll blow up with errors on purpose.  Be nice to Eero's servers and don't DDOS them! ;)
+`interval_seconds` must be 25sec or greater. Any less and it'll blow up with errors on purpose. Be nice to Eero's servers and don't DDoS them! ;)
 
 ## Step 4: Restart and test
 
-You should see devices populate, using the devices nicknames where possible as the name of the device.  If you experience any issues, please let me know!
+You should see devices populate, using the devices nicknames where possible as the name of the device.
+
+## Support
+
+If you are experiencing any issues, first check the (community support discussion thread)[https://www.reddit.com/r/homeassistant/comments/8k987c/eero_device_tracker/] to see if anyone else has solved your issue previously. You can also discuss the issue you are having there. If you feel it is a bug, please [create an github Issue with the details](https://github.com/jrlucier/eero_tracker/issues).
+
+## See Also
+
+* [Eero Device Tracker community discussion forum](https://www.reddit.com/r/homeassistant/comments/8k987c/eero_device_tracker/)
+* [Eero Mesh WiFi routers](https://eero.com/)
