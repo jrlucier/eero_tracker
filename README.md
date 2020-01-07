@@ -104,4 +104,4 @@ The following features are not yet implemented, and currently have no plans for 
 
 * [Eero Device Tracker community discussion forum](https://community.home-assistant.io/t/eero-support/21153)
 * [Eero Mesh WiFi routers](https://eero.com/)
-* [Eero Python Client](https://github.com/343max/eero-client) (NOTE: this does not use this currently)
+* [Eero Python Client (343max)](https://github.com/343max/eero-client)
