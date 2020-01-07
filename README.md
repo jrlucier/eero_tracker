@@ -93,7 +93,15 @@ You should see devices populate, using the devices nicknames where possible as t
 
 If you are experiencing any issues, first check the [community support discussion thread](https://community.home-assistant.io/t/eero-support/21153) to see if anyone else has solved your issue previously. You can also discuss the issue you are having there. If you feel it is a bug, please [create an github Issue with the details](https://github.com/jrlucier/eero_tracker/issues).
 
+## Not Yet Implemented
+
+The following features are not yet implemented, and currently have no plans for adding. If you are interested in contributing code, please submit a patch.
+
+- support for family profiles (pause/unpause switch) and assigning to Home Assistant "person" entities
+- eero connection status and most recent upload/download speed test results
+
 ## See Also
 
 * [Eero Device Tracker community discussion forum](https://community.home-assistant.io/t/eero-support/21153)
 * [Eero Mesh WiFi routers](https://eero.com/)
+* [Eero Python Client](https://github.com/343max/eero-client) (NOTE: this does not use this currently)
