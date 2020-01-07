@@ -91,7 +91,7 @@ You should see devices populate, using the devices nicknames where possible as t
 
 ## Support
 
-If you are experiencing any issues, first check the (community support discussion thread)[https://www.reddit.com/r/homeassistant/comments/8k987c/eero_device_tracker/] to see if anyone else has solved your issue previously. You can also discuss the issue you are having there. If you feel it is a bug, please [create an github Issue with the details](https://github.com/jrlucier/eero_tracker/issues).
+If you are experiencing any issues, first check the [community support discussion thread](https://www.reddit.com/r/homeassistant/comments/8k987c/eero_device_tracker/) to see if anyone else has solved your issue previously. You can also discuss the issue you are having there. If you feel it is a bug, please [create an github Issue with the details](https://github.com/jrlucier/eero_tracker/issues).
 
 ## See Also
 
