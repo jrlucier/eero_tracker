@@ -43,11 +43,13 @@ unzip eero_tracker-1.0.4.zip
 
 #### Why do I need to run a script in my config directory?
 
-Eero doesn't have a traditional user/password login setup, so we need to use your phone's SMS or your email address to create an authenticated session. To do that, you'll need to SSH into your device running Home Assistant to run an interactive script that allows that to occur. 
+Eero doesn't have a traditional user/password login setup, so we need to use your phone's SMS or your email address to create an authenticated session token (`eero.session`). To do that, you'll need to SSH into your device running Home Assistant to run an interactive script that allows that to occur.
 
 #### Note for Hass.io users
 
-If you're running [Hass.io](https://www.home-assistant.io/hassio/), be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on. Your configuration directory will be stored under `/config` instead of `~/.homeassistant/`. 
+If you're running [Hass.io](https://www.home-assistant.io/hassio/), be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on. Your configuration directory will be stored under `/config` instead of `~/.homeassistant/`.
+
+An alternative method would be to run `eero_tracker_instantiate.py` on another machine, and then manually copy over the `eero.session` file to your /config directory.
 
 #### Running the Script
 
