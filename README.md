@@ -2,7 +2,7 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
-Adds device tracking support for [Eero Mesh WiFi routers](https://eero.com/) to Home Assistant](https://www.home-assistant.io/).
+Adds device tracking support for [Eero Mesh WiFi routers](https://eero.com/) to [Home Assistant](https://www.home-assistant.io/).
 
 This project is based on [@343max's eero-client project](https://github.com/343max/eero-client) -- many thanks to him or this project probably wouldn't exist. Thanks to [@rsnodgrass](https://github.com/rsnodgrass) for the structural improvements. This code has no warranties, and please submit any pull requests you might have to improve upon it.
 
