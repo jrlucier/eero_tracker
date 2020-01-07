@@ -98,6 +98,7 @@ If you are experiencing any issues, first check the [community support discussio
 The following features are not yet implemented, and currently have no plans for adding. If you are interested in contributing code, please submit a patch.
 
 - support for family profiles (pause/unpause switch) and assigning to Home Assistant "person" entities
+- support for rebooting the eero network
 - eero connection status and most recent upload/download speed test results
 
 ## See Also
