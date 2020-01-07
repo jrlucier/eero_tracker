@@ -2,11 +2,13 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
-Adds device tracking support for [Eero Mesh WiFi routers](https://eero.com/) to Home Assistant (HA, HASSIO, HASS OS). This project is based on [@343max's eero-client project](https://github.com/343max/eero-client) -- many thanks to him or this project probably wouldn't exist. Thanks to [@rsnodgrass](https://github.com/rsnodgrass) for the structural improvements. This code has no warranties, and please submit any pull requests you might have to improve upon it.
+Adds device tracking support for [Eero Mesh WiFi routers](https://eero.com/) to Home Assistant](https://www.home-assistant.io/).
+
+This project is based on [@343max's eero-client project](https://github.com/343max/eero-client) -- many thanks to him or this project probably wouldn't exist. Thanks to [@rsnodgrass](https://github.com/rsnodgrass) for the structural improvements. This code has no warranties, and please submit any pull requests you might have to improve upon it.
 
 ## Setup Steps
 
-1. Install using HACS or manually
+1. Install using HACS or manual copying of files
 2. Run the eero_tracker_instantiate.py script to setup credentials (creates an eero.session in /config)
 3. Add eero_tracker to your configuration.yaml
 4. Restart Home Assistant
@@ -42,9 +44,9 @@ unzip eero_tracker-1.0.4.zip
 
 Eero doesn't have a traditional user/password login setup, so we need to use your phone's SMS or your email address to create an authenticated session. To do that, you'll need to SSH into your device running Home Assistant to run an interactive script that allows that to occur. 
 
-#### Note for HASS.IO users
+#### Note for Hass.io users
 
-If you're running HASS.IO, be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on. Your configuration directory will be stored under `/config` instead of `~/.homeassistant/`. 
+If you're running [Hass.io](https://www.home-assistant.io/hassio/), be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on. Your configuration directory will be stored under `/config` instead of `~/.homeassistant/`. 
 
 #### Running the Script
 
@@ -59,7 +61,9 @@ python3 eero_tracker_instantiate.py
 ```
 This will prompt you for your phone number (no dashes), and then it will send you an SMS text with a code you will need to put in. You may also use an email address instead. Once done, it will create an `eero.session` file in your configuration directory.  Subsequent calls to this python file will dump the list of connected wireless devices, their mac addresses, and hostnames for easier reference.  You technically shouldn't need `eero_tracker_instantiate.py` after the creation of the `eero.session` file, but I keep it around for quick mac address referencing.
 
-If you're not running HASS.IO (default SSH user is root), and have Home Assistant configured differently, then check the permissions on the files. `chown` the files to the same permissions as your other HA configuration files (`ls -al` to check yours in your configuration directory).  Mine are owned by `homeassistant:nogroup`:
+#### Manual Installation Permissions
+
+If you aren't running [Hass.io](https://www.home-assistant.io/hassio/) (whose default SSH user is root), and have Home Assistant configured differently, then check the permissions on the files. `chown` the files to the same permissions as your other HA configuration files (`ls -al` to check yours in your configuration directory). Mine are owned by `homeassistant:nogroup`:
 
 ```
 sudo chown homeassistant:nogroup eero.session 
@@ -81,19 +85,21 @@ device_tracker:
     only_macs: "11:22:33:44:55:66, 22:22:22:22:22:22"  # Optional
 ```
 
-`only_macs` is optional, but allows you to reduce down the devices returned to a core set of mac addresses. The list is comma separated. 
+#### Config Keys
 
-`interval_seconds` must be 25sec or greater. Any less and it'll blow up with errors on purpose. Be nice to Eero's servers and don't DDoS them! ;)
+`only_macs` is optional, but allows reducing the list of devices monitored to a core set of mac addresses. The list is comma separated.
+
+`interval_seconds` must be 25 seconds or greater. Any less and it'll blow up with errors on purpose. Be nice to Eero's servers and don't DDoS them! ;)
 
 ## Step 4: Restart and test
 
-You should see devices populate, using the devices nicknames where possible as the name of the device.
+You should see devices populate, using the devices nicknames, where possible, as the name of the device.
 
 ## Support
 
 If you are experiencing any issues, first check the [community support discussion thread](https://community.home-assistant.io/t/eero-support/21153) to see if anyone else has solved your issue previously. You can also discuss the issue you are having there. If you feel it is a bug, please [create an github Issue with the details](https://github.com/jrlucier/eero_tracker/issues).
 
-## Not Yet Implemented
+#### Not Yet Implemented
 
 The following features are not yet implemented, and currently have no plans for adding. If you are interested in contributing code, please submit a patch.
 
@@ -103,6 +109,6 @@ The following features are not yet implemented, and currently have no plans for 
 
 ## See Also
 
-* [Eero Device Tracker community discussion forum](https://community.home-assistant.io/t/eero-support/21153)
-* [Eero Mesh WiFi routers](https://eero.com/)
-* [Eero Python Client (343max)](https://github.com/343max/eero-client)
+* [Eero Tracker community discussion forum](https://community.home-assistant.io/t/eero-support/21153)
+* [Eero Mesh WiFi routers](https://eero.com/) (official site)
+* [Eero Python Client (343max/eero-client)](https://github.com/343max/eero-client)
