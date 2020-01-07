@@ -1,5 +1,6 @@
 ## Eero Device Tracker for Home Assistant
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
 Adds device tracking support for [Eero Mesh WiFi routers](https://eero.com/) to [Home Assistant](https://www.home-assistant.io/).
