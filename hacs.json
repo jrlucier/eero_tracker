@@ -1,5 +1,5 @@
 {
-  "name": "Eero Device Tracker",
-  "domains": ["device_tracker"],
+  "name": "eero Mesh WiFi Device Tracker",
+  "domains": [ "device_tracker" ],
   "render_readme": true
 }
