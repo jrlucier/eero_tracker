@@ -20,9 +20,7 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_ONLY_MACS_KEY = 'only_macs'
 CONF_SESSION_FILE_NAME = 'session_file_name'
-CONF_SESSION_KEY = 'session_key'
 
-DEFAULT_SCAN_INTERVAL = 60
 MINIMUM_SCAN_INTERVAL = 25
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
@@ -81,7 +79,7 @@ y
 
     def scan_devices(self):
         """Required for the API, handles returning results"""
-        # Return empty array if the session was never started...usually by too fast a speed specified.
+        # Return empty array if the session was never started.
         if self.__session is None:
             return []
 
