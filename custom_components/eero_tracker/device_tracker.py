@@ -1,15 +1,7 @@
 """
-Support for Eero routers.
+Eero WiFi routers device_tracker for Home Assistant
 
-Place this eero_tracker.py file in: ~/.homeassistant/custom_components/device_tracker/
-
-Given a session which can be located via the original eero.py file.  Here's an example configuration.yaml for this:
-device_tracker:
-  - platform: eero_tracker
-    consider_home: 300
-    interval_seconds: 60
-    only_macs: "11:22:33:44:55:66, 22:22:22:22:22:22"
-
+For instructions and examples, see https://github.com/jrlucier/eero_tracker
 """
 import logging
 import voluptuous as vol
@@ -24,18 +16,19 @@ from homeassistant.components.device_tracker import (
 
 REQUIREMENTS = ['requests==2.13.0']
 
-__version__ = '1.0.4'
-
 _LOGGER = logging.getLogger(__name__)
 
 CONF_ONLY_MACS_KEY = 'only_macs'
 CONF_SESSION_FILE_NAME = 'session_file_name'
+CONF_SESSION_KEY = 'session_key'
+
+DEFAULT_SCAN_INTERVAL = 60
+MINIMUM_SCAN_INTERVAL = 25
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_ONLY_MACS_KEY, default=''): cv.string,
     vol.Optional(CONF_SESSION_FILE_NAME, default='eero.session'): cv.string
 })
-
 
 def get_scanner(hass, config):
     """Validate the configuration and return EeroDeviceScanner."""
@@ -69,15 +62,17 @@ class EeroDeviceScanner(DeviceScanner):
         self.__account_update_timestamp = None
         self.__mac_to_nickname = {}
 
-        # Prevent users from specifying an interval faster than 25.  This will block the tracker
-        # from returning results by bailing out early
-        if self.__scan_interval < datetime.timedelta(seconds=25):
+        # Prevent users from specifying an interval faster than 25 seconds
+        minimum_interval = datetime.timedelta(seconds=MINIMUM_SCAN_INTERVAL)
+        if self.__scan_interval < minimum_interval:
             _LOGGER.error(
-                'Disabled. Scan interval is too fast!  Must be 25 or greater to prevent DDOSing Eeros servers.')
-            return
-
-        # Grab the session from the file
+                "Scan interval %d too frequent! Must be >= %d to prevent DDOSing eero's servers; limiting to %d seconds.",
+                self.__scan_interval, MINIMUM_SCAN_INTERVAL, MINIMUM_SCAN_INTERVAL)
+            self.__scan_interval = minimum_interval
+y
+        # Grab the session key from the file
         try:
+            _LOGGER.debug("Loading eero session key from '%s'", self.__session_file)
             with open(self.__session_file, 'r') as f:
                 self.__session = f.read().replace('\n', '')
         except IOError:
@@ -150,9 +145,15 @@ class EeroDeviceScanner(DeviceScanner):
     def _login_refresh(self):
         """Refresh the Eero session"""
         response = self._post_req('login/refresh', cookies=self._cookie_dict)
-        self.__session = response['user_token']
-        with open(self.__session_file, 'w+') as f:
-            f.write(self.__session)
+        new_session = response['user_token']
+
+        _LOGGER.debug("Updating %s with new session key", self.__session_file)
+        try:
+            with open(self.__session_file, 'w+') as f:
+                f.write(new_session)
+            self.__session = new_session
+        except IOError:
+            _LOGGER.error('Could not update eero session key in {}'.format(self.__session_file))
 
     def _account(self):
         return self._refreshed(lambda: self._get_req('account', cookies=self._cookie_dict))
