@@ -67,7 +67,7 @@ class EeroDeviceScanner(DeviceScanner):
                 "Scan interval %d too frequent! Must be >= %d to prevent DDOSing eero's servers; limiting to %d seconds.",
                 self.__scan_interval, MINIMUM_SCAN_INTERVAL, MINIMUM_SCAN_INTERVAL)
             self.__scan_interval = minimum_interval
-y
+
         # Grab the session key from the file
         try:
             _LOGGER.debug("Loading eero session key from '%s'", self.__session_file)
