@@ -26,17 +26,18 @@ For easy updates whenever a new version is released, use the [Home Assistant Com
 jrlucier/eero_tracker
 ```
 
-Then go to the Integration tab and search for "Eero Tracker" and click install.
+Then go to the Integration tab, search for "Eero Tracker", and click install.
 
 ### Option B: Manual Installation
 
 Copy the scripts!
 
-SSH into your device. Now we need to download the zip file from the releases section, and uncompress it in your configuration directory (mine is `~/.homeassistant`):
+SSH into your device. Download the zip file from the releases section and uncompress it in your configuration directory (e.g. `~/.homeassistant` or `/config`):
+
 ```
 cd ~/.homeassistant/
-wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.4/eero_tracker-1.0.4.zip
-unzip eero_tracker-1.0.4.zip
+wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.5/eero_tracker-1.0.5.zip
+unzip eero_tracker-1.0.5.zip
 ```
 
 ## Step 2: Generate Credentials for Connecting to Your Eero
@@ -49,34 +50,37 @@ Eero doesn't have a traditional user/password login setup, so we need to use you
 
 If you're running [Hass.io](https://www.home-assistant.io/hassio/), be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on. Your configuration directory will be stored under `/config` instead of `~/.homeassistant/`.
 
-An alternative method would be to run `eero_tracker_instantiate.py` on another machine, and then manually copy over the `eero.session` file to your /config directory.
+An alternative method would be to run `eero_tracker_instantiate.py` on another machine, and then manually copy over the `eero.session` file to your config directory.
 
 #### Running the Script
 
 The scripts in this project rely on the "requests" package, so install it if it's not already installed:
+
 ```
 python3 -m pip install requests
 ```
 
 We need to get an authenticated session created with Eero's servers. So to do that, you'll need to go to your configuration directory (eg: `cd ~/.homeassistant`), and run the `eero_tracker_instantiate.py` file:
+
 ```
 python3 eero_tracker_instantiate.py
 ```
+
 This will prompt you for your phone number (no dashes), and then it will send you an SMS text with a code you will need to put in. You may also use an email address instead. Once done, it will create an `eero.session` file in your configuration directory.  Subsequent calls to this python file will dump the list of connected wireless devices, their mac addresses, and hostnames for easier reference.  You technically shouldn't need `eero_tracker_instantiate.py` after the creation of the `eero.session` file, but I keep it around for quick mac address referencing.
 
 #### Manual Installation Permissions
 
 If you aren't running [Hass.io](https://www.home-assistant.io/hassio/) (whose default SSH user is root), and have Home Assistant configured differently, then check the permissions on the files. `chown` the files to the same permissions as your other HA configuration files (`ls -al` to check yours in your configuration directory). Mine are owned by `homeassistant:nogroup`:
 
-```
-sudo chown homeassistant:nogroup eero.session 
+```bash
+sudo chown homeassistant:nogroup eero.session
 sudo chown homeassistant:nogroup eero_tracker_instantiate.py 
 sudo chown -R homeassistant:nogroup custom_components/
 ```
 
 ## Step 3: Add Tracker to Home Assistant's Configuration
 
-Now that that installation and authentication are done, all that is left is to add the `device_tracke` to your `configuration.yaml`.
+Now that that installation and authentication are done, all that is left is to add the `[device_tracker](https://www.home-assistant.io/integrations/device_tracker/)` to your `configuration.yaml`.
 
 Here's an example:
 
@@ -85,18 +89,20 @@ device_tracker:
   - platform: eero_tracker
     consider_home: 300
     interval_seconds: 60 # Recommended...do not set this lower than 25, we don't want to DDOS Eero
-    only_macs: "11:22:33:44:55:66, 22:22:22:22:22:22"  # Optional
+    only_macs: "11:22:33:44:55:66,22:22:22:22:22:22"  # optional
 ```
 
 #### Config Keys
 
-`only_macs` is optional, but allows reducing the list of devices monitored to a core set of mac addresses. The list is comma separated.
+`only_macs` is an optional comma separated list of MAC addresses that reduces the devices monitored to a smaller set.
 
-`interval_seconds` must be 25 seconds or greater. Any less and it'll blow up with errors on purpose. Be nice to Eero's servers and don't DDoS them! ;)
+`interval_seconds` **must** be 25 seconds or greater to avoid DDoS of eero's servers.
 
-## Step 4: Restart and test
+See [device_tracker docs](https://www.home-assistant.io/integrations/device_tracker/) for details on additional configuration options.
 
-You should see devices populate, using the devices nicknames, where possible, as the name of the device.
+## Step 4: Restart and Test
+
+You should see devices populate using each device's nicknames, where possible, as the device name.
 
 ## Support
 
@@ -104,7 +110,7 @@ If you are experiencing any issues, first check the [community support discussio
 
 #### Not Yet Implemented
 
-The following features are not yet implemented, and currently have no plans for adding. If you are interested in contributing code, please submit a patch.
+The following features are not yet implemented (no plans currently for adding). If you are interested in contributing code, please submit a patch.
 
 - support for family profiles (pause/unpause switch) and assigning to Home Assistant "person" entities
 - support for rebooting the eero network
@@ -115,3 +121,4 @@ The following features are not yet implemented, and currently have no plans for 
 * [Eero Tracker community discussion forum](https://community.home-assistant.io/t/eero-support/21153)
 * [Eero Mesh WiFi routers](https://eero.com/) (official site)
 * [Eero Python Client (343max/eero-client)](https://github.com/343max/eero-client)
+* [Eero API endpoint examples](https://github.com/yepher/eeroMonitor)
