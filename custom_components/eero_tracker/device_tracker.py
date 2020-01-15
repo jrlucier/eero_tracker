@@ -31,9 +31,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 def get_scanner(hass, config):
     """Validate the configuration and return EeroDeviceScanner."""
 
-    _LOGGER.debug('Eero init')
+    _LOGGER.debug('Initializing eero_tracker (domain %s)', DOMAIN)
     return EeroDeviceScanner(hass, config[DOMAIN])
-
 
 class EeroException(Exception):
     """A propagating error for Eero"""
@@ -54,7 +53,7 @@ class EeroDeviceScanner(DeviceScanner):
         self.__session_file = hass.config.path(config[CONF_SESSION_FILE_NAME])
         self.__session = None
         self.__only_macs = set([x.strip().lower() for x in config[CONF_ONLY_MACS_KEY].split(',') if x != ''])
-        self.__scan_interval = config[CONF_SCAN_INTERVAL]
+        self.__scan_interval = int(config[CONF_SCAN_INTERVAL])
         self.__last_results = []
         self.__account = None
         self.__account_update_timestamp = None
@@ -67,6 +66,8 @@ class EeroDeviceScanner(DeviceScanner):
                 "Scan interval %d too frequent! Must be >= %d to prevent DDOSing eero's servers; limiting to %d seconds.",
                 self.__scan_interval, MINIMUM_SCAN_INTERVAL, MINIMUM_SCAN_INTERVAL)
             self.__scan_interval = minimum_interval
+        else:
+            _LOGGER.debug("Scan interval = %s seconds", self.__scan_interval)
 
         # Grab the session key from the file
         try:
