@@ -50,7 +50,7 @@ Eero doesn't have a traditional user/password login setup, so we need to use you
 
 If you're running [Hass.io](https://www.home-assistant.io/hassio/), be aware that the official SSH server will not allow you to run python files (so I'm told, and which we require), so use the Secure Shell community add-on. Your configuration directory will be stored under `/config` instead of `~/.homeassistant/`.
 
-An alternative method would be to run `eero_tracker_instantiate.py` on another machine, and then manually copy over the `eero.session` file to your config directory.
+An alternative method would be to run `eero_tracker_instantiate.py` on another machine, and then manually copy over the `eero.session` file to the config directory on the Home Assistant host.
 
 #### Running the Script
 
