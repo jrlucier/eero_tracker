@@ -11,8 +11,10 @@ import re
 import json
 import requests
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.device_tracker import (
-    DOMAIN, PLATFORM_SCHEMA, CONF_SCAN_INTERVAL, DeviceScanner)
+from homeassistant.components.device_tracker.legacy import DeviceScanner
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.components.device_tracker.const import (
+           DOMAIN, CONF_SCAN_INTERVAL, SCAN_INTERVAL)
 
 REQUIREMENTS = ['requests==2.13.0']
 
@@ -22,6 +24,12 @@ CONF_ONLY_MACS_KEY = 'only_macs'
 CONF_SESSION_FILE_NAME = 'session_file_name'
 
 MINIMUM_SCAN_INTERVAL = 25
+
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_ONLY_MACS_KEY, default=''): cv.string,
+    vol.Optional(CONF_SESSION_FILE_NAME, default='eero.session'): cv.string
+})
+
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_ONLY_MACS_KEY, default=''): cv.string,
@@ -53,7 +61,7 @@ class EeroDeviceScanner(DeviceScanner):
         self.__session_file = hass.config.path(config[CONF_SESSION_FILE_NAME])
         self.__session = None
         self.__only_macs = set([x.strip().lower() for x in config[CONF_ONLY_MACS_KEY].split(',') if x != ''])
-        self.__scan_interval = int(config[CONF_SCAN_INTERVAL])
+        self.__scan_interval = config.get(CONF_SCAN_INTERVAL, SCAN_INTERVAL) # datetime.timeinterval already
         self.__last_results = []
         self.__account = None
         self.__account_update_timestamp = None
