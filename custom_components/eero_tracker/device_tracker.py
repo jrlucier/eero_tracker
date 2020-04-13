@@ -1,5 +1,5 @@
 """
-Eero WiFi routers device_tracker for Home Assistant
+Eero WiFi router device_tracker for Home Assistant
 
 For instructions and examples, see https://github.com/jrlucier/eero_tracker
 """
@@ -82,11 +82,10 @@ class EeroDeviceScanner(DeviceScanner):
         minimum_interval = datetime.timedelta(seconds=MINIMUM_SCAN_INTERVAL)
         if self.__scan_interval < minimum_interval:
             _LOGGER.error(
-                "Scan interval %d too frequent! Must be >= %d to prevent DDOSing eero's servers; limiting to %d seconds.",
-                self.__scan_interval, MINIMUM_SCAN_INTERVAL, MINIMUM_SCAN_INTERVAL)
+                f"Scan interval {self.__scan_interval} too frequent! Must be >= {MINIMUM_SCAN_INTERVAL} seconds to prevent DDOSing eero's servers; limiting to {minimum_interval}.")
             self.__scan_interval = minimum_interval
         else:
-            _LOGGER.debug(f"Scan interval = {self.__scan_interval} seconds")
+            _LOGGER.debug(f"Scan interval = {self.__scan_interval}")
 
         # Grab the session key from the file
         try:
