@@ -129,24 +129,27 @@ class EeroDeviceScanner(DeviceScanner):
             # load all devices for this network, but only track connected wireless devices
             devices = self._devices(network['url'])
             json_obj = json.loads(json.dumps(devices, indent=4))
-            for device in json_obj:
-                if device['wireless'] and device['connected']:
-                    mac = device['mac']
-                    nickname = device['nickname']
-
-                    if len(self.__only_macs) > 0 and mac not in self.__only_macs:
-                        continue
-
-                    _LOGGER.debug(f"Network {network_id} device found: nickname={nickname}; host={device['hostname']}; mac={mac}")
-
-                    # Create a mapping of macs to nicknames for lookup by device_name, if a nickname is assigned
-                    if nickname:
-                        self.__mac_to_nickname[mac] = nickname
-
-                    # Append a result
-                    self.__last_results.append(mac)
+            self._update_tracked_devices(json_obj)
 
         return
+
+    def _update_tracked_devices(self, devices_json_obj):
+        for device in devices_json_obj:
+            if device['wireless'] and device['connected']:
+                mac = device['mac']
+                nickname = device['nickname']
+
+                if len(self.__only_macs) > 0 and mac not in self.__only_macs:
+                    continue
+
+                _LOGGER.debug(f"Network {network_id} device found: nickname={nickname}; host={device['hostname']}; mac={mac}")
+
+                # Create a mapping of macs to nicknames for lookup by device_name, if a nickname is assigned
+                if nickname:
+                    self.__mac_to_nickname[mac] = nickname
+
+                # Append a result
+                self.__last_results.append(mac)
 
     @property
     def _cookie_dict(self):
@@ -169,7 +172,7 @@ class EeroDeviceScanner(DeviceScanner):
         response = self._post_req('login/refresh', cookies=self._cookie_dict)
         new_session = response.get('user_token')
         if not new_session:
-            _LOGGER.error("Failed updating eero session key!")
+            _LOGGER.error(f"Failed updating eero session key! {response}")
             return
 
         _LOGGER.debug(f"Updating {self.__session_file} with new session key")
