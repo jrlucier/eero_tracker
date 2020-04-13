@@ -16,8 +16,6 @@ from homeassistant.components.device_tracker import PLATFORM_SCHEMA
 from homeassistant.components.device_tracker.const import (
            DOMAIN, CONF_SCAN_INTERVAL, SCAN_INTERVAL)
 
-REQUIREMENTS = ['requests==2.13.0']
-
 _LOGGER = logging.getLogger(__name__)
 
 CONF_ONLY_MACS_KEY = 'only_macs'
