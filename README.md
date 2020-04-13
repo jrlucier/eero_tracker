@@ -117,7 +117,9 @@ For additional device tracker configuration options, see the [HA device_tracker 
 
 ## Step 4: Restart and Test
 
-You should see devices populate using each device's nicknames, where possible, as the device name.
+You should see wireless devices populate using each device's nicknames, where possible, as the device name.
+
+**NOTE: This does not populate any devices that are not wirelessly connected to your eero.**
 
 ## Support
 
@@ -131,6 +133,7 @@ The following features are not yet implemented (no plans currently for adding). 
 - support for rebooting the eero network
 - eero connection status and most recent upload/download speed test results
 - config_flow to allow all configuration through the Home Assistant UI
+- config option to also track devices that are not wireless (default is wireless only)
 
 ## See Also
 
