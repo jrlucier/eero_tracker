@@ -82,7 +82,7 @@ class EeroDeviceScanner(DeviceScanner):
         minimum_interval = datetime.timedelta(seconds=MINIMUM_SCAN_INTERVAL)
         if self.__scan_interval < minimum_interval:
             _LOGGER.error(
-                f"Scan interval {self.__scan_interval} too frequent! Must be >= {MINIMUM_SCAN_INTERVAL} seconds to prevent DDOSing eero's servers; limiting to {minimum_interval}.")
+                f"Scan interval {self.__scan_interval} MUST be >= {MINIMUM_SCAN_INTERVAL} seconds to prevent DDoS on eero's servers; limiting to {minimum_interval}.")
             self.__scan_interval = minimum_interval
         else:
             _LOGGER.debug(f"Scan interval = {self.__scan_interval}")
