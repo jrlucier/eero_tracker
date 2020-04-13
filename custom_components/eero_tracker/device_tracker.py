@@ -20,11 +20,13 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_ONLY_MACS_KEY = 'only_macs'
 CONF_SESSION_FILE_NAME = 'session_file_name'
+CONF_ONLY_NETWORKS = 'only_networks'
 
 MINIMUM_SCAN_INTERVAL = 25
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_ONLY_MACS_KEY, default=''): cv.string,
+    vol.Optional(CONF_ONLY_NETWORKS, default=[]): vol.All(cv.ensure_list, [cv.positive_int]),    
     vol.Optional(CONF_SESSION_FILE_NAME, default='eero.session'): cv.string
 })
 
@@ -52,12 +54,20 @@ class EeroDeviceScanner(DeviceScanner):
         """Initialize the scanner."""
         self.__session_file = hass.config.path(config[CONF_SESSION_FILE_NAME])
         self.__session = None
+        
+        # configure any filters (macs or networks)
         self.__only_macs = set([x.strip().lower() for x in config[CONF_ONLY_MACS_KEY].split(',') if x != ''])
-        self.__scan_interval = int(config[CONF_SCAN_INTERVAL])
+        _LOGGER.debug(f"Including only MAC addresses: {self.__only_macs}")
+
+        self.__only_networks = set(config[CONF_ONLY_NETWORKS])
+        _LOGGER.debug(f"Including only networks: {self.__only_networks}")
+
         self.__last_results = []
         self.__account = None
         self.__account_update_timestamp = None
         self.__mac_to_nickname = {}
+
+        self.__scan_interval = config.get(CONF_SCAN_INTERVAL)
 
         # Prevent users from specifying an interval faster than 25 seconds
         minimum_interval = datetime.timedelta(seconds=MINIMUM_SCAN_INTERVAL)
@@ -104,24 +114,34 @@ class EeroDeviceScanner(DeviceScanner):
         self.__mac_to_nickname = {}
         self.__last_results = []
         for network in self.__account['networks']['data']:
-            devices = self._devices(network['url'])
+            match = re.search('/networks/(\d+)', network['url'])
+            network_id = int(match.group(1))
+            
+            # if specific networks should be filtered, skip any not in the filter
+            if len(self.__only_networks) > 0 and network_id not in self.__only_networks:
+                _LOGGER.debug(f"Ignoring network {network_id} devices; not in only_networks: {self.__only_networks}")
+                continue
 
+            # load all devices for this network, but only track connected wireless devices
+            devices = self._devices(network['url'])
             json_obj = json.loads(json.dumps(devices, indent=4))
             for device in json_obj:
                 if device['wireless'] and device['connected']:
+                    mac = device['mac']
+                    nickname = device['nickname']
 
-                    if len(self.__only_macs) > 0 and device['mac'] not in self.__only_macs:
+                    if len(self.__only_macs) > 0 and mac not in self.__only_macs:
                         continue
 
                     _LOGGER.debug(
-                        "Device found: {}, {}, {}".format(device['nickname'], device['hostname'], device['mac']))
+                        "Device found for network {}: {}, {}, {}".format(network_id, nickname, device['hostname'], mac))
 
                     # Create a mapping of macs to nicknames for lookup by device_name, if a nickname is assigned
-                    if device['nickname']:
-                        self.__mac_to_nickname[device['mac']] = device['nickname']
+                    if nickname:
+                        self.__mac_to_nickname[mac] = nickname
 
                     # Append a result
-                    self.__last_results.append(device['mac'])
+                    self.__last_results.append(mac)
 
         return
 
@@ -176,8 +196,9 @@ class EeroDeviceScanner(DeviceScanner):
     def _parse_response(response):
         """Basic response handler"""
         data = json.loads(response.text)
-        if data['meta']['code'] is not 200 and data['meta']['code'] is not 201:
-            raise EeroException(data['meta']['code'], data['meta'].get('error', ""))
+        response_code = data['meta']['code']
+        if response_code not in [ 200, 201 ]:
+            raise EeroException(response_code, data['meta'].get('error', ""))
         return data.get('data', "")
 
     def _post_req(self, action, **kwargs):
