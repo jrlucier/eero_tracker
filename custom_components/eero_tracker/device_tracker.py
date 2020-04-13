@@ -122,6 +122,7 @@ class EeroDeviceScanner(DeviceScanner):
 
         self.__mac_to_nickname = {}
         self.__last_results = []
+        
         for network in self.__account['networks']['data']:
             match = re.search('/networks/(\d+)', network['url'])
             network_id = int(match.group(1))
