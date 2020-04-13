@@ -41,7 +41,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 def get_scanner(hass, config):
     """Validate the configuration and return EeroDeviceScanner."""
 
-    _LOGGER.debug('Initializing eero_tracker (domain %s)', DOMAIN)
+    _LOGGER.debug(f"Initializing eero_tracker (domain {DOMAIN})")
     return EeroDeviceScanner(hass, config[DOMAIN])
 
 class EeroException(Exception):
@@ -65,10 +65,12 @@ class EeroDeviceScanner(DeviceScanner):
         
         # configure any filters (macs or networks)
         self.__only_macs = set([x.strip().lower() for x in config[CONF_ONLY_MACS_KEY].split(',') if x != ''])
-        _LOGGER.debug(f"Including only MAC addresses: {self.__only_macs}")
+        if len(self.__only_macs) > 0:
+            _LOGGER.info(f"Including only MAC addresses: {self.__only_macs}")
 
         self.__only_networks = set(config[CONF_ONLY_NETWORKS])
-        _LOGGER.debug(f"Including only networks: {self.__only_networks}")
+        if len(self.__only_networks) > 0:
+            _LOGGER.info(f"Including only networks: {self.__only_networks}")
 
         self.__last_results = []
         self.__account = None
@@ -85,15 +87,15 @@ class EeroDeviceScanner(DeviceScanner):
                 self.__scan_interval, MINIMUM_SCAN_INTERVAL, MINIMUM_SCAN_INTERVAL)
             self.__scan_interval = minimum_interval
         else:
-            _LOGGER.debug("Scan interval = %s seconds", self.__scan_interval)
+            _LOGGER.debug(f"Scan interval = {self.__scan_interval} seconds")
 
         # Grab the session key from the file
         try:
-            _LOGGER.debug("Loading eero session key from '%s'", self.__session_file)
+            _LOGGER.debug(f"Loading eero session key from '{self.__session_file}'")
             with open(self.__session_file, 'r') as f:
                 self.__session = f.read().replace('\n', '')
         except IOError:
-            _LOGGER.error('Could not find the eero.session file at: {}'.format(self.__session_file))
+            _LOGGER.error(f"Could not find the eero.session file '{self.__session_file}'")
             self.__session = None
 
     def scan_devices(self):
@@ -127,7 +129,7 @@ class EeroDeviceScanner(DeviceScanner):
             
             # if specific networks should be filtered, skip any not in the filter
             if len(self.__only_networks) > 0 and network_id not in self.__only_networks:
-                _LOGGER.debug(f"Ignoring network {network_id} devices; not in only_networks: {self.__only_networks}")
+                _LOGGER.debug(f"Ignoring network {network_id} devices not in only_networks: {self.__only_networks}")
                 continue
 
             # load all devices for this network, but only track connected wireless devices
@@ -166,20 +168,20 @@ class EeroDeviceScanner(DeviceScanner):
                 self._login_refresh()
                 return func()
             else:
-                _LOGGER.error('Eero connection failure: {}'.format(exception.error_message))
+                _LOGGER.error(f"Eero connection failure: {exception.error_message}")
 
     def _login_refresh(self):
         """Refresh the Eero session"""
         response = self._post_req('login/refresh', cookies=self._cookie_dict)
         new_session = response['user_token']
 
-        _LOGGER.debug("Updating %s with new session key", self.__session_file)
+        _LOGGER.debug(f"Updating {self.__session_file} with new session key")
         try:
             with open(self.__session_file, 'w+') as f:
                 f.write(new_session)
             self.__session = new_session
         except IOError:
-            _LOGGER.error('Could not update eero session key in {}'.format(self.__session_file))
+            _LOGGER.error(f"Could not update eero session key in {self.__session_file}")
 
     def _account(self):
         return self._refreshed(lambda: self._get_req('account', cookies=self._cookie_dict))
