@@ -141,8 +141,7 @@ class EeroDeviceScanner(DeviceScanner):
                     if len(self.__only_macs) > 0 and mac not in self.__only_macs:
                         continue
 
-                    _LOGGER.debug(
-                        "Network {} device found: nickname={}; host={}; mac={}".format(network_id, nickname, device['hostname'], mac))
+                    _LOGGER.debug(f"Network {network_id} device found: nickname={nickname}; host={device['hostname']}; mac={mac}")
 
                     # Create a mapping of macs to nicknames for lookup by device_name, if a nickname is assigned
                     if nickname:
