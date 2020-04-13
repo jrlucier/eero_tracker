@@ -129,11 +129,11 @@ class EeroDeviceScanner(DeviceScanner):
             # load all devices for this network, but only track connected wireless devices
             devices = self._devices(network['url'])
             json_obj = json.loads(json.dumps(devices, indent=4))
-            self._update_tracked_devices(json_obj)
+            self._update_tracked_devices(network_id, json_obj)
 
         return
 
-    def _update_tracked_devices(self, devices_json_obj):
+    def _update_tracked_devices(self, network_id, devices_json_obj):
         for device in devices_json_obj:
             if device['wireless'] and device['connected']:
                 mac = device['mac']
