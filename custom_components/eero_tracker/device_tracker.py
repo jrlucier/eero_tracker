@@ -171,9 +171,14 @@ class EeroDeviceScanner(DeviceScanner):
 
         _LOGGER.debug(f"Updating {self.__session_file} with new session key")
         try:
+            # update in-memory session first, in case there is any failure in writing to the
+            # session file, at least this tracker will continue working until next HA restart
+            self.__session = new_session
+
+            # TODO: ideally write to a temp file, and if successful, then move to overwrite
+            # the existing session file
             with open(self.__session_file, 'w+') as f:
                 f.write(new_session)
-            self.__session = new_session
         except IOError:
             _LOGGER.error(f"Could not update eero session key in {self.__session_file}")
 
