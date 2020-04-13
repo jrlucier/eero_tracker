@@ -7,9 +7,9 @@ Adds device tracking support for [Eero Mesh WiFi routers](https://eero.com/) to 
 
 This project is based on [@343max's eero-client project](https://github.com/343max/eero-client) -- many thanks to him or this project probably wouldn't exist. Thanks to [@rsnodgrass](https://github.com/rsnodgrass) for the structural improvements. This code has no warranties, and please submit any pull requests you might have to improve upon it.
 
-## Setup Steps
+## Setup Process
 
-1. Install using HACS or manual copying of files
+1. Install using [HACS](https://github.com/hacs/integration) or manually copy the files
 2. Run the eero_tracker_instantiate.py script to setup credentials (creates an eero.session in /config)
 3. Add eero_tracker to your configuration.yaml
 4. Restart Home Assistant
@@ -40,7 +40,7 @@ wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.6/eero_track
 unzip eero_tracker-1.0.6.zip
 ```
 
-## Step 2: Generate Credentials for Connecting to Your Eero
+## Step 2: Generate Credentials for Connecting to Your Eeros
 
 #### Why do I need to run a script in my config directory?
 
@@ -82,14 +82,14 @@ sudo chown -R homeassistant:nogroup custom_components/
 
 Now that that installation and authentication are done, all that is left is to add the [device_tracker](https://www.home-assistant.io/integrations/device_tracker/) to your `configuration.yaml`.
 
-Simplest example of adding the eero device tracker:
+The minimum required configuration:
 
 ```yaml
 device_tracker:
   - platform: eero_tracker
 ```
 
-Additional optional configuration options are available:
+Example including optional configuration:
 
 ```yaml
 device_tracker:
@@ -130,6 +130,7 @@ The following features are not yet implemented (no plans currently for adding). 
 - support for family profiles (pause/unpause switch) and assigning to Home Assistant "person" entities
 - support for rebooting the eero network
 - eero connection status and most recent upload/download speed test results
+- config_flow to allow all configuration through the Home Assistant UI
 
 ## See Also
 
