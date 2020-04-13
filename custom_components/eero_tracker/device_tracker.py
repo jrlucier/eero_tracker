@@ -148,18 +148,17 @@ class EeroDeviceScanner(DeviceScanner):
             if self.__only_wireless and not device['wireless']:
                 continue
 
+            # if mac addressess are whitelisted with only_macs, skip if not on the list
             mac = device['mac']
-            nickname = device['nickname']
-
             if len(self.__only_macs) > 0 and mac not in self.__only_macs:
                 continue
 
-            _LOGGER.debug(f"Network {network_id} device found: nickname={nickname}; host={device['hostname']}; mac={mac}")
-
             # create mapping of mac addresses to nicknames for lookup by device_name (if a nickname is assigned)
+            nickname = device['nickname']
             if nickname:
                 self.__mac_to_nickname[mac] = nickname
 
+            _LOGGER.debug(f"Network {network_id} device found: nickname={nickname}; host={device['hostname']}; mac={mac}")
             self.__last_results.append(mac)
 
     @property
