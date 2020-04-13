@@ -97,7 +97,7 @@ device_tracker:
 
     # optional eero_tracker settings:
     only_macs: "11:22:33:44:55:66,22:22:22:22:22:22"
-    network_filter:
+    only_networks:
       - 30120
 
     # standard device_tracker options
@@ -112,7 +112,7 @@ device_tracker:
 |--------------------|---------|-------------|
 | `only_macs`        | none    | comma separated list of MAC addresses that reduces the devices monitored to a smaller set. |
 | `interval_seconds` | 180     | **must** be 25 seconds or greater to avoid DDoS of eero's servers. |
-| `network_filter`   | none    | YAML list of network identifiers to search for devices (only useful if you have multiple eero locations under a single eero email address, for instance at work or a second home). Turn on HA debug logging to determine the network ids for your eeros |
+| `only_networks`    | none    | YAML list of network identifiers to search for devices (only useful if you have multiple eero locations under a single eero email address, for instance at work or a second home). Turn on HA debug logging to determine the network ids for your eeros |
 | `only_wireless`    | True    | only track wireless devices if set to true (normally hardwired devices are not useful for tracking)
 
 For additional device tracker configuration options, see the [HA device_tracker docs](https://www.home-assistant.io/integrations/device_tracker/).
