@@ -142,7 +142,7 @@ class EeroDeviceScanner(DeviceScanner):
                         continue
 
                     _LOGGER.debug(
-                        "Device found for network {}: {}, {}, {}".format(network_id, nickname, device['hostname'], mac))
+                        "Network {} device found: nickname={}; host={}; mac={}".format(network_id, nickname, device['hostname'], mac))
 
                     # Create a mapping of macs to nicknames for lookup by device_name, if a nickname is assigned
                     if nickname:
