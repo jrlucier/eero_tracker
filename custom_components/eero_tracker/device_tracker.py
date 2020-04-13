@@ -32,12 +32,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_SESSION_FILE_NAME, default='eero.session'): cv.string
 })
 
-
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Optional(CONF_ONLY_MACS_KEY, default=''): cv.string,
-    vol.Optional(CONF_SESSION_FILE_NAME, default='eero.session'): cv.string
-})
-
 def get_scanner(hass, config):
     """Validate the configuration and return EeroDeviceScanner."""
 
