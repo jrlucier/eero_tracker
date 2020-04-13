@@ -11,8 +11,10 @@ import re
 import json
 import requests
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.device_tracker import (
-    DOMAIN, PLATFORM_SCHEMA, CONF_SCAN_INTERVAL, DeviceScanner)
+from homeassistant.components.device_tracker.legacy import DeviceScanner
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.components.device_tracker.const import (
+           DOMAIN, CONF_SCAN_INTERVAL, SCAN_INTERVAL)
 
 REQUIREMENTS = ['requests==2.13.0']
 
@@ -27,6 +29,12 @@ MINIMUM_SCAN_INTERVAL = 25
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_ONLY_MACS_KEY, default=''): cv.string,
     vol.Optional(CONF_ONLY_NETWORKS, default=[]): vol.All(cv.ensure_list, [cv.positive_int]),    
+    vol.Optional(CONF_SESSION_FILE_NAME, default='eero.session'): cv.string
+})
+
+
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_ONLY_MACS_KEY, default=''): cv.string,
     vol.Optional(CONF_SESSION_FILE_NAME, default='eero.session'): cv.string
 })
 
@@ -67,7 +75,7 @@ class EeroDeviceScanner(DeviceScanner):
         self.__account_update_timestamp = None
         self.__mac_to_nickname = {}
 
-        self.__scan_interval = config.get(CONF_SCAN_INTERVAL)
+        self.__scan_interval = config.get(CONF_SCAN_INTERVAL, SCAN_INTERVAL) # datetime.timeinterval already
 
         # Prevent users from specifying an interval faster than 25 seconds
         minimum_interval = datetime.timedelta(seconds=MINIMUM_SCAN_INTERVAL)
