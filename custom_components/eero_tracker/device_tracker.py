@@ -19,8 +19,9 @@ from homeassistant.components.device_tracker.const import (
 _LOGGER = logging.getLogger(__name__)
 
 CONF_ONLY_MACS_KEY = 'only_macs'
-CONF_SESSION_FILE_NAME = 'session_file_name'
 CONF_ONLY_NETWORKS = 'only_networks'
+CONF_ONLY_WIRELESS = 'only_wireless'
+CONF_SESSION_FILE_NAME = 'session_file_name'
 
 MINIMUM_SCAN_INTERVAL = 25
 
@@ -28,7 +29,8 @@ CACHE_EXPIRY=3600 # cache accounts for an hour
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_ONLY_MACS_KEY, default=''): cv.string,
-    vol.Optional(CONF_ONLY_NETWORKS, default=[]): vol.All(cv.ensure_list, [cv.positive_int]),    
+    vol.Optional(CONF_ONLY_NETWORKS, default=[]): vol.All(cv.ensure_list, [cv.positive_int]),
+    vol.Optional(CONF_ONLY_WIRELESS, default=True): cv.boolean, 
     vol.Optional(CONF_SESSION_FILE_NAME, default='eero.session'): cv.string
 })
 
@@ -65,6 +67,9 @@ class EeroDeviceScanner(DeviceScanner):
         self.__only_networks = set(config[CONF_ONLY_NETWORKS])
         if len(self.__only_networks) > 0:
             _LOGGER.info(f"Including only networks: {self.__only_networks}")
+
+        self.__only_wireless = config[CONF_ONLY_WIRELESS]
+        _LOGGER.info(f"Tracking only wireless devices = {self.__only_wireless}")
 
         self.__last_results = []
         self.__account = None
@@ -135,21 +140,27 @@ class EeroDeviceScanner(DeviceScanner):
 
     def _update_tracked_devices(self, network_id, devices_json_obj):
         for device in devices_json_obj:
-            if device['wireless'] and device['connected']:
-                mac = device['mac']
-                nickname = device['nickname']
+            # skip devices that are not connected
+            if not device['connected']:
+                continue
 
-                if len(self.__only_macs) > 0 and mac not in self.__only_macs:
-                    continue
+            # if only wireless devices are tracked, then skip if not wireless
+            if self.__only_wireless and not device['wireless']:
+                continue
 
-                _LOGGER.debug(f"Network {network_id} device found: nickname={nickname}; host={device['hostname']}; mac={mac}")
+            mac = device['mac']
+            nickname = device['nickname']
 
-                # Create a mapping of macs to nicknames for lookup by device_name, if a nickname is assigned
-                if nickname:
-                    self.__mac_to_nickname[mac] = nickname
+            if len(self.__only_macs) > 0 and mac not in self.__only_macs:
+                continue
 
-                # Append a result
-                self.__last_results.append(mac)
+            _LOGGER.debug(f"Network {network_id} device found: nickname={nickname}; host={device['hostname']}; mac={mac}")
+
+            # create mapping of mac addresses to nicknames for lookup by device_name (if a nickname is assigned)
+            if nickname:
+                self.__mac_to_nickname[mac] = nickname
+
+            self.__last_results.append(mac)
 
     @property
     def _cookie_dict(self):
