@@ -26,6 +26,8 @@ CONF_ONLY_NETWORKS = 'only_networks'
 
 MINIMUM_SCAN_INTERVAL = 25
 
+CACHE_EXPIRY=3600 # cache accounts for an hour
+
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_ONLY_MACS_KEY, default=''): cv.string,
     vol.Optional(CONF_ONLY_NETWORKS, default=[]): vol.All(cv.ensure_list, [cv.positive_int]),    
@@ -107,11 +109,11 @@ class EeroDeviceScanner(DeviceScanner):
 
     def _update_info(self):
         """Retrieve the latest information from Eero for returning to HA."""
-        # Cache the accounts for an hour...these should rarely change and reduces the lookup requests
-        # we use to only 1 every update.
-        if self.__account is None or self.__account_update_timestamp is None or \
-                        (time.time() - self.__account_update_timestamp) > 3600:
-            _LOGGER.debug("Updating eero account information cache...")
+        # Cache the accounts for an hour. These rarely change and this reduces the
+        # lookup requests to only 1 every update. This cache is reset on Home Assistant
+        # restarts, so in an emergency a user can always restart Home Assistant to force update.
+        if self.__account_update_timestamp is None or (time.time() - self.__account_update_timestamp) >= CACHE_EXPIRY:
+            _LOGGER.debug(f"Updating eero account information cache (expires every {CACHE_EXPIRY} seconds)")
             self.__account = self._account()
             self.__account_update_timestamp = time.time()
 
