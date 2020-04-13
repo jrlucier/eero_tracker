@@ -80,7 +80,7 @@ sudo chown -R homeassistant:nogroup custom_components/
 
 ## Step 3: Add Tracker to Home Assistant's Configuration
 
-Now that that installation and authentication are done, all that is left is to add the `[device_tracker](https://www.home-assistant.io/integrations/device_tracker/)` to your `configuration.yaml`.
+Now that that installation and authentication are done, all that is left is to add the [device_tracker](https://www.home-assistant.io/integrations/device_tracker/) to your `configuration.yaml`.
 
 Simplest example of adding the eero device tracker:
 
@@ -107,11 +107,11 @@ device_tracker:
 
 #### Config Keys
 
-`only_macs`: optional comma separated list of MAC addresses that reduces the devices monitored to a smaller set.
-
-`interval_seconds`: **must** be 25 seconds or greater to avoid DDoS of eero's servers.
-
-`network_filter`: optional YAML list of network identifiers to search for devices (only useful if you have multiple eero locations under a single eero email address, for instance at work or a second home). Turn on HA debug logging to determine the network ids for your eeros.
+| Key                | Default | Description |
+|--------------------|---------|-------------|
+| `only_macs`        | none    | optional comma separated list of MAC addresses that reduces the devices monitored to a smaller set. |
+| `interval_seconds` | 180     | **must** be 25 seconds or greater to avoid DDoS of eero's servers. |
+| `network_filter`   | none    | optional YAML list of network identifiers to search for devices (only useful if you have multiple eero locations under a single eero email address, for instance at work or a second home). Turn on HA debug logging to determine the network ids for your eeros |
 
 For additional device tracker configuration options, see the [HA device_tracker docs](https://www.home-assistant.io/integrations/device_tracker/).
 
