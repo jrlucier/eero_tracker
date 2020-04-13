@@ -169,7 +169,7 @@ class EeroDeviceScanner(DeviceScanner):
         response = self._post_req('login/refresh', cookies=self._cookie_dict)
         new_session = response.get('user_token')
         if not new_session:
-            LOG.error("Failed updating eero session key!")
+            _LOGGER.error("Failed updating eero session key!")
             return
 
         _LOGGER.debug(f"Updating {self.__session_file} with new session key")
