@@ -14,7 +14,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.components.device_tracker.legacy import DeviceScanner
 from homeassistant.components.device_tracker import PLATFORM_SCHEMA
 from homeassistant.components.device_tracker.const import (
-           DOMAIN, CONF_SCAN_INTERVAL, SCAN_INTERVAL)
+           DOMAIN, CONF_SCAN_INTERVAL)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -76,12 +76,12 @@ class EeroDeviceScanner(DeviceScanner):
         self.__account_update_timestamp = None
         self.__mac_to_nickname = {}
 
-        self.__scan_interval = config.get(CONF_SCAN_INTERVAL, SCAN_INTERVAL) # datetime.timeinterval already
+        minimum_interval = datetime.timedelta(seconds=MINIMUM_SCAN_INTERVAL)
+        self.__scan_interval = config.get(CONF_SCAN_INTERVAL, minimum_interval)
 
         # Prevent users from specifying an interval faster than 25 seconds
-        minimum_interval = datetime.timedelta(seconds=MINIMUM_SCAN_INTERVAL)
         if self.__scan_interval < minimum_interval:
-            _LOGGER.error(
+            _LOGGER.warning(
                 f"Scan interval {self.__scan_interval} MUST be >= {MINIMUM_SCAN_INTERVAL} seconds to prevent DDoS on eero's servers; limiting to {minimum_interval}.")
             self.__scan_interval = minimum_interval
         else:
