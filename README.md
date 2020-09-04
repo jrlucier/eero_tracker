@@ -36,8 +36,8 @@ SSH into your device. Download the zip file from the releases section and uncomp
 
 ```
 cd ~/.homeassistant/
-wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.7/eero_tracker-1.0.7.zip
-unzip eero_tracker-1.0.7.zip
+wget https://github.com/jrlucier/eero_tracker/releases/download/1.0.8/eero_tracker-1.0.8.zip
+unzip eero_tracker-1.0.8.zip
 ```
 
 ## Step 2: Generate Credentials for Connecting to Your Eeros
