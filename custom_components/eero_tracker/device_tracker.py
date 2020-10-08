@@ -155,6 +155,11 @@ class EeroDeviceScanner(DeviceScanner):
 
             # create mapping of mac addresses to nicknames for lookup by device_name (if a nickname is assigned)
             nickname = device['nickname']
+
+            # default nickname to host name if missing
+            if not nickname or nickname == 'None':
+                nickname = device['hostname']
+
             if nickname:
                 self.__mac_to_nickname[mac] = nickname
 
