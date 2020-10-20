@@ -14,9 +14,16 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.components.device_tracker.legacy import DeviceScanner
 from homeassistant.components.device_tracker import PLATFORM_SCHEMA
 from homeassistant.components.device_tracker.const import (
-           DOMAIN, CONF_SCAN_INTERVAL)
+    ATTR_MAC,
+    CONF_SCAN_INTERVAL,
+    DOMAIN,
+)
 
 _LOGGER = logging.getLogger(__name__)
+
+ATTR_CONNECTED_TO = 'connected_to'
+ATTR_IP_ADDRESS = 'ip_address'
+ATTR_NETWORK_NAME = 'network_name'
 
 CONF_ONLY_MACS_KEY = 'only_macs'
 CONF_ONLY_NETWORKS = 'only_networks'
@@ -30,7 +37,7 @@ CACHE_EXPIRY=3600 # cache accounts for an hour
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_ONLY_MACS_KEY, default=''): cv.string,
     vol.Optional(CONF_ONLY_NETWORKS, default=[]): vol.All(cv.ensure_list, [cv.positive_int]),
-    vol.Optional(CONF_ONLY_WIRELESS, default=True): cv.boolean, 
+    vol.Optional(CONF_ONLY_WIRELESS, default=True): cv.boolean,
     vol.Optional(CONF_SESSION_FILE_NAME, default='eero.session'): cv.string
 })
 
@@ -58,7 +65,7 @@ class EeroDeviceScanner(DeviceScanner):
         """Initialize the scanner."""
         self.__session_file = hass.config.path(config[CONF_SESSION_FILE_NAME])
         self.__session = None
-        
+
         # configure any filters (macs or networks)
         self.__only_macs = set([x.strip().lower() for x in config[CONF_ONLY_MACS_KEY].split(',') if x != ''])
         if len(self.__only_macs) > 0:
@@ -74,7 +81,8 @@ class EeroDeviceScanner(DeviceScanner):
         self.__last_results = []
         self.__account = None
         self.__account_update_timestamp = None
-        self.__mac_to_nickname = {}
+        self.__mac_is_connected = {}
+        self.__mac_to_attrs = {}
 
         minimum_interval = datetime.timedelta(seconds=MINIMUM_SCAN_INTERVAL)
         self.__scan_interval = config.get(CONF_SCAN_INTERVAL, minimum_interval)
@@ -107,7 +115,19 @@ class EeroDeviceScanner(DeviceScanner):
 
     def get_device_name(self, mac):
         """Required for the API. None to indicate we don't know the devices true name"""
-        return self.__mac_to_nickname.get(mac)
+        return self.__mac_to_attrs.get(mac, {}).get('nickname')
+
+    def get_extra_attributes(self, mac):
+        """Get the extra attributes of a device."""
+        attrs = {}
+
+        if self.__mac_is_connected[mac]:
+            attrs[ATTR_NETWORK_NAME] = self.__mac_to_attrs[mac]['network_name']
+            attrs[ATTR_CONNECTED_TO] = self.__mac_to_attrs[mac]['location']
+            attrs[ATTR_IP_ADDRESS] = self.__mac_to_attrs[mac]['ip']
+            attrs[ATTR_MAC] = mac
+
+        return attrs
 
     def _update_info(self):
         """Retrieve the latest information from Eero for returning to HA."""
@@ -119,13 +139,14 @@ class EeroDeviceScanner(DeviceScanner):
             self.__account = self._account()
             self.__account_update_timestamp = time.time()
 
-        self.__mac_to_nickname = {}
         self.__last_results = []
-        
+        self.__mac_is_connected = {}
+        self.__mac_to_attrs = {}
+
         for network in self.__account['networks']['data']:
             match = re.search('/networks/(\d+)', network['url'])
             network_id = int(match.group(1))
-            
+
             # if specific networks should be filtered, skip any not in the filter
             if len(self.__only_networks) > 0 and network_id not in self.__only_networks:
                 _LOGGER.debug(f"Ignoring network {network_id} devices not in only_networks: {self.__only_networks}")
@@ -134,14 +155,17 @@ class EeroDeviceScanner(DeviceScanner):
             # load all devices for this network, but only track connected wireless devices
             devices = self._devices(network['url'])
             json_obj = json.loads(json.dumps(devices, indent=4))
-            self._update_tracked_devices(network_id, json_obj)
+            self._update_tracked_devices(network_id, network['name'], json_obj)
 
         return
 
-    def _update_tracked_devices(self, network_id, devices_json_obj):
+    def _update_tracked_devices(self, network_id, network_name, devices_json_obj):
         for device in devices_json_obj:
             # skip devices that are not connected
-            if not device['connected']:
+            connected = device['connected']
+            mac = device['mac']
+            self.__mac_is_connected[mac] = connected
+            if not connected:
                 continue
 
             # if only wireless devices are tracked, then skip if not wireless
@@ -149,7 +173,6 @@ class EeroDeviceScanner(DeviceScanner):
                 continue
 
             # if mac addressess are whitelisted with only_macs, skip if not on the list
-            mac = device['mac']
             if len(self.__only_macs) > 0 and mac not in self.__only_macs:
                 continue
 
@@ -160,8 +183,12 @@ class EeroDeviceScanner(DeviceScanner):
             if not nickname or nickname == 'None':
                 nickname = device['hostname']
 
-            if nickname:
-                self.__mac_to_nickname[mac] = nickname
+            self.__mac_to_attrs[mac] = {
+                'ip': device['ip'],
+                'location': device['source']['location'],
+                'network_name': network_name,
+                'nickname': nickname,
+            }
 
             _LOGGER.debug(f"Network {network_id} device found: nickname={nickname}; host={device['hostname']}; mac={mac}")
             self.__last_results.append(mac)
