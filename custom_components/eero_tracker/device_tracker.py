@@ -14,7 +14,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.components.device_tracker.legacy import DeviceScanner
 from homeassistant.components.device_tracker import PLATFORM_SCHEMA
 from homeassistant.components.device_tracker.const import (
-    ATTR_MAC,
+    ATTR_HOST_NAME,
     CONF_SCAN_INTERVAL,
     DOMAIN,
 )
@@ -81,7 +81,6 @@ class EeroDeviceScanner(DeviceScanner):
         self.__last_results = []
         self.__account = None
         self.__account_update_timestamp = None
-        self.__mac_is_connected = {}
         self.__mac_to_attrs = {}
 
         minimum_interval = datetime.timedelta(seconds=MINIMUM_SCAN_INTERVAL)
@@ -115,19 +114,19 @@ class EeroDeviceScanner(DeviceScanner):
 
     def get_device_name(self, mac):
         """Required for the API. None to indicate we don't know the devices true name"""
-        return self.__mac_to_attrs.get(mac, {}).get('nickname')
+        name = self.__mac_to_attrs[mac]['nickname']
+        if name is None or name == 'None':
+            name = self.__mac_to_attrs[mac]['hostname']
+        return name
 
     def get_extra_attributes(self, mac):
         """Get the extra attributes of a device."""
-        attrs = {}
-
-        if self.__mac_is_connected[mac]:
-            attrs[ATTR_NETWORK_NAME] = self.__mac_to_attrs[mac]['network_name']
-            attrs[ATTR_CONNECTED_TO] = self.__mac_to_attrs[mac]['location']
-            attrs[ATTR_IP_ADDRESS] = self.__mac_to_attrs[mac]['ip']
-            attrs[ATTR_MAC] = mac
-
-        return attrs
+        return {
+            ATTR_NETWORK_NAME: self.__mac_to_attrs[mac]['network_name'],
+            ATTR_CONNECTED_TO: self.__mac_to_attrs[mac]['location'],
+            ATTR_IP_ADDRESS: self.__mac_to_attrs[mac]['ip'],
+            ATTR_HOST_NAME: self.__mac_to_attrs[mac]['hostname'],
+        }
 
     def _update_info(self):
         """Retrieve the latest information from Eero for returning to HA."""
@@ -140,7 +139,6 @@ class EeroDeviceScanner(DeviceScanner):
             self.__account_update_timestamp = time.time()
 
         self.__last_results = []
-        self.__mac_is_connected = {}
         self.__mac_to_attrs = {}
 
         for network in self.__account['networks']['data']:
@@ -161,36 +159,26 @@ class EeroDeviceScanner(DeviceScanner):
 
     def _update_tracked_devices(self, network_id, network_name, devices_json_obj):
         for device in devices_json_obj:
-            # skip devices that are not connected
-            connected = device['connected']
+            # skip devices that are not connected, non-wireless (if configured), or non-whitelisted (if configured)
             mac = device['mac']
-            self.__mac_is_connected[mac] = connected
-            if not connected:
+            if any(
+                [
+                    not device['connected'],
+                    self.__only_wireless and not device['wireless'],
+                    len(self.__only_macs) > 0 and mac not in self.__only_macs,
+                ]
+            ):
                 continue
-
-            # if only wireless devices are tracked, then skip if not wireless
-            if self.__only_wireless and not device['wireless']:
-                continue
-
-            # if mac addressess are whitelisted with only_macs, skip if not on the list
-            if len(self.__only_macs) > 0 and mac not in self.__only_macs:
-                continue
-
-            # create mapping of mac addresses to nicknames for lookup by device_name (if a nickname is assigned)
-            nickname = device['nickname']
-
-            # default nickname to host name if missing
-            if not nickname or nickname == 'None':
-                nickname = device['hostname']
 
             self.__mac_to_attrs[mac] = {
+                'hostname': device['hostname'],
                 'ip': device['ip'],
                 'location': device['source']['location'],
                 'network_name': network_name,
                 'nickname': nickname,
             }
 
-            _LOGGER.debug(f"Network {network_id} device found: nickname={nickname}; host={device['hostname']}; mac={mac}")
+            _LOGGER.debug(f"Network {network_id} device found: nickname={device['nickname']}; host={device['hostname']}; mac={mac}")
             self.__last_results.append(mac)
 
     @property
