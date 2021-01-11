@@ -1,6 +1,7 @@
 {
   "domain": "eero_tracker",
   "name": "Eero Tracker",
+  "config_flow": true,
   "documentation": "https://github.com/jrlucier/eero_tracker/",
   "dependencies": [],
   "codeowners": ["@jrlucier"],

@@ -1,0 +1,19 @@
+{
+    "config": {
+        "title": "Eero",
+        "step": {
+            "user": {
+                "title": "Sign-in with Eero account",
+                "data": {
+                    "username": "Email or Phone Number for your Eero account"
+                }
+            },
+            "verify": {
+                "title": "Verify",
+                "data": {
+                    "verification_code": "Enter the verification code that was sent to your email or phone number"
+                }
+            }
+        }
+    }
+}
