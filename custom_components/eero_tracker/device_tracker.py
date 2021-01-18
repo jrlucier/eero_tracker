@@ -75,6 +75,7 @@ class EeroDeviceScanner(DeviceScanner):
         self.__account = None
         self.__account_update_timestamp = None
         self.__mac_to_nickname = {}
+        self.__mac_to_attrs = {}           
 
         minimum_interval = datetime.timedelta(seconds=MINIMUM_SCAN_INTERVAL)
         self.__scan_interval = config.get(CONF_SCAN_INTERVAL, minimum_interval)
@@ -109,6 +110,10 @@ class EeroDeviceScanner(DeviceScanner):
         """Required for the API. None to indicate we don't know the devices true name"""
         return self.__mac_to_nickname.get(mac)
 
+    def get_extra_attributes(self, mac):
+        """Get the extra attributes of a device."""
+        return self.__mac_to_attrs.get(mac)
+
     def _update_info(self):
         """Retrieve the latest information from Eero for returning to HA."""
         # Cache the accounts for an hour. These rarely change and this reduces the
@@ -120,6 +125,7 @@ class EeroDeviceScanner(DeviceScanner):
             self.__account_update_timestamp = time.time()
 
         self.__mac_to_nickname = {}
+        self.__mac_to_attrs = {}
         self.__last_results = []
         
         for network in self.__account['networks']['data']:
@@ -162,6 +168,10 @@ class EeroDeviceScanner(DeviceScanner):
 
             if nickname:
                 self.__mac_to_nickname[mac] = nickname
+
+            attrs = device["source"]
+            if attrs:
+                self.__mac_to_attrs[mac] = device["source"]
 
             _LOGGER.debug(f"Network {network_id} device found: nickname={nickname}; host={device['hostname']}; mac={mac}")
             self.__last_results.append(mac)
