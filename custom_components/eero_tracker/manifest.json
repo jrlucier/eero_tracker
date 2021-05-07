@@ -4,5 +4,6 @@
   "documentation": "https://github.com/jrlucier/eero_tracker/",
   "dependencies": [],
   "codeowners": ["@jrlucier"],
-  "requirements": ["requests>=2.13.0"]
+  "requirements": ["requests>=2.13.0"],
+  "version": "1.0.10"
 }
