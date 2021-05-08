@@ -1,3 +1,7 @@
+## 1.0.10 (2021-05-07)
+New config flow thanks to Jack Stevenson (github: cogwirrel)
+Fixed HA versioning error thanks to Ron Heft (github: ronaldheft)
+
 ## 1.0.6 (2020-03-01)
 Changes to device_tracker since there's been some deprecation and changing of config's usage.
 
